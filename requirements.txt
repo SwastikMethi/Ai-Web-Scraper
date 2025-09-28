@@ -8,4 +8,3 @@ html5lib
 python-dotenv
 webdriver-manager
 undetected-chromedriver
-distutils
