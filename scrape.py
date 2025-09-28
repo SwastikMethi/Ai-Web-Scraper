@@ -4,7 +4,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from webdriver_manager.chrome import ChromeDriverManager
-import undetected_chromedriver as uc
+# import undetected_chromedriver as uc
 from bs4 import BeautifulSoup
 
 def _common_headless_options(options: webdriver.ChromeOptions):
