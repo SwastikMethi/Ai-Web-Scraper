@@ -7,7 +7,7 @@ from webdriver_manager.chrome import ChromeDriverManager
 # import undetected_chromedriver as uc
 from bs4 import BeautifulSoup
 
-def _common_headless_options(options: webdriver.ChromeOptions | uc.ChromeOptions):
+def _common_headless_options(options: webdriver.ChromeOptions):
     # Modern headless flag; falls back to legacy if needed.
     options.add_argument("--headless=new")
     options.add_argument("--no-sandbox")
