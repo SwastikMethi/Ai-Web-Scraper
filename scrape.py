@@ -18,14 +18,16 @@ def _common_headless_options(options: webdriver.ChromeOptions):
     options.add_argument("--window-size=1920,1080")
     return options
 
-def scrape_website(url, headless: bool = False, wait_selector: str = "div.s-main-slot"):
+def scrape_website(url, headless: bool = True, wait_selector: str = "div.s-main-slot"):
     print("Launching chrome browser...")
 
-    chrome_driver = ChromeDriverManager().install()
+    # chrome_driver = ChromeDriverManager().install()
+
     options = webdriver.ChromeOptions()
     if headless:
         options = _common_headless_options(options)
-    driver = webdriver.Chrome(service=Service(chrome_driver), options=options)
+    # driver = webdriver.Chrome(service=Service(chrome_driver), options=options)
+    driver = webdriver.Chrome(options=options)
 
     try:
         print(f"Scraping {url}")
