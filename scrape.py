@@ -27,7 +27,9 @@ def scrape_website(url, headless: bool = True, wait_selector: str = "div.s-main-
     if headless:
         options = _common_headless_options(options)
     # driver = webdriver.Chrome(service=Service(chrome_driver), options=options)
-    driver = webdriver.Chrome(options=options)
+    service = Service(ChromeDriverManager().install())
+
+    driver = webdriver.Chrome(service=service, options=options)
 
     try:
         print(f"Scraping {url}")
