@@ -32,7 +32,7 @@ st.subheader("🔍 Step 1: Scrape Website")
 if st.button("🚀 Scrape Website", use_container_width=True):
     if url:
         with st.spinner("Scraping website..."):
-            result = scrape_website_uc(url)
+            result = scrape_website(url)
             content = extract_body_content(result)
             cleaned_content = clean_body_content(content)
             st.session_state.dom_content = cleaned_content
