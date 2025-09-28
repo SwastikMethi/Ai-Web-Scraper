@@ -1,5 +1,5 @@
 import streamlit as st
-from scrape import scrape_website, extract_body_content, clean_body_content, split_cleaned_content, scrape_website_uc
+from scrape import scrape_website, extract_body_content, clean_body_content, split_cleaned_content, scrape_website_uc, scrape_website_playwright
 from parse import parse_with_ollama, ask_about_site
 
 # Page config

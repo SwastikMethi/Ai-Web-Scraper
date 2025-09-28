@@ -6,6 +6,8 @@ from selenium.webdriver.support import expected_conditions as EC
 from webdriver_manager.chrome import ChromeDriverManager
 # import undetected_chromedriver as uc
 from bs4 import BeautifulSoup
+# from playwright.async_api import sync_playwright
+import asyncio
 
 def _common_headless_options(options: webdriver.ChromeOptions):
     # Modern headless flag; falls back to legacy if needed.
@@ -54,7 +56,7 @@ def scrape_website_uc(url):
     options.add_argument("--disable-gpu")
     options.add_argument("--window-size=1920,1080")
 
-    driver = uc.Chrome(options=options)
+    driver = uc.Chrome(options=options, use_subprocess=True, version_main=114)
     try:
         driver.get(url)
         html = driver.page_source
@@ -62,21 +64,17 @@ def scrape_website_uc(url):
     finally:
         driver.quit()
 
+from playwright.sync_api import sync_playwright
 
+def scrape_website_playwright(url):
+    with sync_playwright() as p:
+        browser = p.chromium.launch(headless=True)
+        page = browser.new_page()
+        page.goto(url)
+        html = page.content()
+        browser.close()
+        return html
 
-# def scrape_website_bypass_bot(url):
-#     print("Launching undetected Chrome...")
-#     driver = uc.Chrome()
-#     try:
-#         print(f"Scraping {url}")
-#         driver.get(url)
-#         html = driver.page_source
-#         return html
-    
-#     except Exception as e:
-#         print(f"Error : {e}")
-#     finally:
-#         driver.quit()
 
 def extract_body_content(result):
     soup = BeautifulSoup(result, "html.parser")
