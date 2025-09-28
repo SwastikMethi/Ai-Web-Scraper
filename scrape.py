@@ -4,7 +4,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from webdriver_manager.chrome import ChromeDriverManager
-import undetected_chromedriver as uc
+# import undetected_chromedriver as uc
 from bs4 import BeautifulSoup
 
 def _common_headless_options(options: webdriver.ChromeOptions | uc.ChromeOptions):
@@ -43,19 +43,19 @@ def scrape_website(url, headless: bool = False, wait_selector: str = "div.s-main
 
 
 
-def scrape_website_bypass_bot(url):
-    print("Launching undetected Chrome...")
-    driver = uc.Chrome()
-    try:
-        print(f"Scraping {url}")
-        driver.get(url)
-        html = driver.page_source
-        return html
+# def scrape_website_bypass_bot(url):
+#     print("Launching undetected Chrome...")
+#     driver = uc.Chrome()
+#     try:
+#         print(f"Scraping {url}")
+#         driver.get(url)
+#         html = driver.page_source
+#         return html
     
-    except Exception as e:
-        print(f"Error : {e}")
-    finally:
-        driver.quit()
+#     except Exception as e:
+#         print(f"Error : {e}")
+#     finally:
+#         driver.quit()
 
 def extract_body_content(result):
     soup = BeautifulSoup(result, "html.parser")
