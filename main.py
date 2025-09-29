@@ -1,5 +1,5 @@
 import streamlit as st
-from scrape import scrape_website, extract_body_content, clean_body_content, split_cleaned_content, scrape_website_uc, scrape_website_playwright
+from scrape import scrape_website, extract_body_content, clean_body_content, split_cleaned_content, scrape_website_uc
 from parse import parse_with_ollama, ask_about_site
 
 # Page config
@@ -37,6 +37,7 @@ if st.button("🚀 Scrape Website", use_container_width=True):
             cleaned_content = clean_body_content(content)
             st.session_state.dom_content = cleaned_content
 
+        print("Scraping completed✅")
         st.toast("Scraping complete!", icon="✅")
         with st.expander("📄 Website Content", expanded=False):
             st.text_area(f"Content for: {url}", cleaned_content, height=400)

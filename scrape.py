@@ -6,9 +6,12 @@ from selenium.webdriver.support import expected_conditions as EC
 from webdriver_manager.chrome import ChromeDriverManager
 # import undetected_chromedriver as uc
 from bs4 import BeautifulSoup
+# from playwright.sync_api import sync_playwright
 # from playwright.async_api import sync_playwright
 import asyncio
+import os
 
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 def _common_headless_options(options: webdriver.ChromeOptions):
     # Modern headless flag; falls back to legacy if needed.
     options.add_argument("--headless=new")
@@ -23,23 +26,19 @@ def _common_headless_options(options: webdriver.ChromeOptions):
 def scrape_website(url, headless: bool = True, wait_selector: str = "div.s-main-slot"):
     print("Launching chrome browser...")
 
-    # chrome_driver = ChromeDriverManager().install()
+    chrome_driver_path = os.path.join(BASE_DIR, "chromedriver.exe")
 
     options = webdriver.ChromeOptions()
     if headless:
         options = _common_headless_options(options)
-    # driver = webdriver.Chrome(service=Service(chrome_driver), options=options)
-    service = Service(ChromeDriverManager().install())
+    driver = webdriver.Chrome(service=Service(chrome_driver_path), options=options)
+    # service = Service(ChromeDriverManager().install())
 
-    driver = webdriver.Chrome(service=service, options=options)
+    # driver = webdriver.Chrome(service=service, options=options)
 
     try:
         print(f"Scraping {url}")
         driver.get(url)
-        # if wait_selector:
-        #     WebDriverWait(driver, 10).until(
-        #         EC.presence_of_all_elements_located((By.CSS_SELECTOR, wait_selector))
-        #     )
         html = driver.page_source
         return html
     except Exception as e:
@@ -64,19 +63,18 @@ def scrape_website_uc(url):
     finally:
         driver.quit()
 
-from playwright.sync_api import sync_playwright
-
-def scrape_website_playwright(url):
-    with sync_playwright() as p:
-        browser = p.chromium.launch(headless=True)
-        page = browser.new_page()
-        page.goto(url)
-        html = page.content()
-        browser.close()
-        return html
+# def scrape_website_playwright(url):
+#     with sync_playwright() as p:
+#         browser = p.chromium.launch(headless=True)
+#         page = browser.new_page()
+#         page.goto(url)
+#         html = page.content()
+#         browser.close()
+#         return html
 
 
 def extract_body_content(result):
+    print("Extracting content...")
     soup = BeautifulSoup(result, "html.parser")
     body_content = soup.body
     if body_content:
@@ -84,6 +82,7 @@ def extract_body_content(result):
     return ""
 
 def clean_body_content(body_content):
+    print("Cleaning content...")
     soup = BeautifulSoup(body_content, "html.parser")
     for script_or_style in soup(["script","style"]):
         script_or_style.extract()
