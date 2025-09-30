@@ -6,8 +6,8 @@ from selenium.webdriver.support import expected_conditions as EC
 from webdriver_manager.chrome import ChromeDriverManager
 # import undetected_chromedriver as uc
 from bs4 import BeautifulSoup
-# from playwright.sync_api import sync_playwright
-# from playwright.async_api import sync_playwright
+from playwright.sync_api import sync_playwright
+
 import asyncio
 import os
 
@@ -63,14 +63,16 @@ def scrape_website_uc(url):
     finally:
         driver.quit()
 
-# def scrape_website_playwright(url):
-#     with sync_playwright() as p:
-#         browser = p.chromium.launch(headless=True)
-#         page = browser.new_page()
-#         page.goto(url)
-#         html = page.content()
-#         browser.close()
-#         return html
+def scrape_website_playwright(url: str) -> str:
+    with sync_playwright() as p:
+        # Launch Chromium (bundled with Playwright)
+        browser = p.chromium.launch(headless=True)
+        page = browser.new_page()
+        page.goto(url, timeout=60000)  # wait up to 60s
+        page.wait_for_load_state("networkidle")  # wait until network is idle
+        html = page.content()
+        browser.close()
+        return html
 
 
 def extract_body_content(result):
