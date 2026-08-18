@@ -1,5 +1,5 @@
-import selenium.webdriver as webdriver
-from selenium.webdriver.chrome.service import Service
+from selenium import webdriver
+from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
@@ -7,13 +7,10 @@ from urllib.parse import urljoin, urlparse
 import time
 import config
 import asyncio
-import os
-from webdriver_manager.chrome import ChromeDriverManager
 from bs4 import BeautifulSoup
 from playwright.sync_api import sync_playwright
 
 
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 def _common_headless_options(options: webdriver.ChromeOptions):
     # Modern headless flag; falls back to legacy if needed.
     options.add_argument("--headless=new")
@@ -28,15 +25,19 @@ def _common_headless_options(options: webdriver.ChromeOptions):
 def scrape_website(url, headless: bool = True, wait_selector: str = "div.s-main-slot"):
     print("Launching chrome browser...")
 
-    chrome_driver_path = os.path.join(BASE_DIR, "chromedriver.exe")
-
     options = webdriver.ChromeOptions()
     if headless:
         options = _common_headless_options(options)
-    driver = webdriver.Chrome(service=Service(chrome_driver_path), options=options)
-    # service = Service(ChromeDriverManager().install())
 
-    # driver = webdriver.Chrome(service=service, options=options)
+    try:
+        # Selenium Manager downloads and caches a ChromeDriver matching the
+        # installed Chrome version when no repository-local driver is present.
+        driver = webdriver.Chrome(options=options)
+    except WebDriverException as exc:
+        raise RuntimeError(
+            "Could not start Chrome. Ensure Chrome is installed and Selenium "
+            "Manager can download a matching ChromeDriver."
+        ) from exc
 
     try:
         print(f"Scraping {url}")
@@ -112,10 +113,11 @@ def crawl_website(base_url, headless=True, max_pages=20, delay=1.5):
 
             # Find all internal links
             soup = BeautifulSoup(html, "html.parser")
+            base_repo = "/".join(base_url.split("/")[:5])
             for a in soup.find_all("a", href=True):
                 full_link = urljoin(base_url, a["href"])
                 parsed = urlparse(full_link)
-                if parsed.netloc == domain and full_link not in visited and full_link not in to_visit:
+                if full_link.startswith(base_repo):
                     to_visit.append(full_link)
 
             time.sleep(delay)  # Avoid hammering the site

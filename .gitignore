@@ -1,0 +1,10 @@
+# ChromeDriver is provisioned automatically by Selenium Manager.
+chromedriver.exe
+chromedriver-win64/
+
+# Python bytecode caches.
+__pycache__/
+*.py[cod]
+/__pycache__
+package-lock.json
+vector_store_index/**

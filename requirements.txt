@@ -6,7 +6,6 @@ beautifulsoup4
 lxml 
 html5lib
 python-dotenv
-webdriver-manager
 undetected-chromedriver
 playwright
 faiss-cpu
